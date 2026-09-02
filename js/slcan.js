@@ -4,6 +4,11 @@
 // CAN port is configured for, so we never send an "S" command.
 const CDC_BAUD = 115200;
 
+// Serial write pacing. Raise WRITE_CHUNK or drop WRITE_GAP_MS for speed; lower the chunk
+// or raise the gap if the log still shows FileRead retries.
+const WRITE_CHUNK = 256;
+const WRITE_GAP_MS = 1;
+
 // USB IDs from ArduPilot's hwdef: 0x1209/0x5740 (dual USB) and 0x5741 are the ChibiOS
 // defaults; the rest are per-vendor overrides (Cube, Holybro, ThePeach, 3DR, VRBrain).
 const ARDUPILOT_FILTERS = [
@@ -75,7 +80,14 @@ export class SLCAN {
 
   async writeRaw(str) {
     if (!this.writer) throw new Error('not connected');
-    await this.writer.write(new TextEncoder().encode(str));
+    const bytes = new TextEncoder().encode(str);
+    if (bytes.length <= WRITE_CHUNK) return this.writer.write(bytes);
+    // The FC's USB RX buffer is smaller than a full 38-frame transfer, so a single
+    // burst overruns it and the node discards the truncated transfer.
+    for (let i = 0; i < bytes.length; i += WRITE_CHUNK) {
+      await this.writer.write(bytes.subarray(i, i + WRITE_CHUNK));
+      await new Promise(r => setTimeout(r, WRITE_GAP_MS));
+    }
   }
 
   async writeBytes(bytes) {

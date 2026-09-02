@@ -369,6 +369,8 @@ async function connect() {
 }
 
 async function pollNodeInfo() {
+  // Multi-frame GetNodeInfo replies compete with the firmware transfer for the bus.
+  if (state.update && !state.update.done) return;
   for (const n of state.nodes.values()) {
     if (!n.name && n.infoTries < 20 && Date.now() - (n.lastInfoReq || 0) > 2000) {
       n.lastInfoReq = Date.now();
