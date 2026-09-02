@@ -83,11 +83,23 @@ export class SLCAN {
     await this.writer.write(bytes);
   }
 
-  async sendFrame(id, data) {
+  frameLine(id, data) {
     const hexId = (id >>> 0).toString(16).toUpperCase().padStart(8, '0');
     let s = 'T' + hexId + data.length;
     for (const b of data) s += b.toString(16).toUpperCase().padStart(2, '0');
-    await this.writeRaw(s + '\r');
+    return s + '\r';
+  }
+
+  async sendFrame(id, data) {
+    await this.writeRaw(this.frameLine(id, data));
+  }
+
+  // One write per transfer: 38 separate ~25-byte writes each cost a USB frame interval,
+  // which capped throughput at roughly 7 KB/s regardless of CAN bus speed.
+  async sendFrames(frames) {
+    let s = '';
+    for (const f of frames) s += this.frameLine(f.id, f.data);
+    await this.writeRaw(s);
   }
 
   async readLoop() {

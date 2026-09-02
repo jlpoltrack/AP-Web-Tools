@@ -58,9 +58,7 @@ function nextTransferId(key) {
 }
 
 async function sendTransfer(canId, payload, transferId, signature) {
-  for (const f of packTransfer(canId, payload, transferId, signature)) {
-    await state.slcan.sendFrame(f.id, f.data);
-  }
+  await state.slcan.sendFrames(packTransfer(canId, payload, transferId, signature));
 }
 
 // ---------- outgoing messages ----------
@@ -171,19 +169,42 @@ async function handleReadRequest(h, p, transferId) {
   }
   if (p.length < 5) return;
   const offset = p[0] + p[1] * 256 + p[2] * 65536 + p[3] * 16777216 + p[4] * 4294967296;
+  traceRead(u, offset);
   const bytes = state.firmware.bytes;
   const chunk = bytes.subarray(Math.min(offset, bytes.length), Math.min(offset + READ_CHUNK, bytes.length));
   await sendReadResponse(h.src, transferId, 0, chunk);
 
   u.served = Math.max(u.served, Math.min(offset + chunk.length, bytes.length));
   u.lastActivity = Date.now();
-  if (!u.started) { u.started = true; log(`Node ${h.src} started reading firmware`); }
+  if (!u.started) { u.started = true; u.startedAt = Date.now(); log(`Node ${h.src} started reading firmware`); }
   renderProgress();
   if (chunk.length < READ_CHUNK && !u.done) {
     u.done = true;
-    log(`Firmware transfer complete (${bytes.length} bytes). Node is verifying and rebooting.`);
+    const secs = (Date.now() - u.startedAt) / 1000;
+    log(`Firmware transfer complete (${bytes.length} bytes) in ${secs.toFixed(1)} s — ` +
+        `${(bytes.length / 1024 / secs).toFixed(1)} KB/s, ${u.reads} reads, ${u.retries || 0} retries. ` +
+        'Node is verifying and rebooting.');
     $('status').textContent = 'Transfer complete — node rebooting';
   }
+}
+
+// Logs the FileRead request pattern so a stall can be attributed. A repeated offset is
+// a bootloader retry (a frame of our response was lost); an advancing offset after a long
+// gap means we were just slow to serve it.
+const READ_GAP_MS = 250;
+
+function traceRead(u, offset) {
+  const now = Date.now();
+  const gap = u.lastRead ? now - u.lastRead : 0;
+  u.lastRead = now;
+  u.reads = (u.reads || 0) + 1;
+  if (offset === u.lastOffset) {
+    u.retries = (u.retries || 0) + 1;
+    log(`FileRead RETRY at offset ${offset} after ${gap} ms (${u.retries} retries so far)`);
+  } else if (gap > READ_GAP_MS) {
+    log(`FileRead offset ${offset} after a ${gap} ms gap (no retry — slow serve)`);
+  }
+  u.lastOffset = offset;
 }
 
 // ---------- MAVLink: put the FC's serial port into SLCAN mode ----------
