@@ -13,9 +13,14 @@ Locally:
 ./serve.sh          # http://localhost:8000
 ```
 
-Web Serial requires a secure context (GitHub Pages is HTTPS; `localhost` also counts) and
-a Chromium browser — Chrome, Edge, Opera, Brave or Arc on desktop. Firefox and Safari have
-both declined to implement Web Serial, and mobile browsers do not support it either.
+Needs the Web Serial API and a secure context (GitHub Pages is HTTPS; `localhost` also
+counts). That means Chromium desktop browsers — Chrome, Edge, Opera, Brave, Arc — or
+Firefox 151+ on desktop, where Web Serial is gated behind an add-on that explains the
+permission before the port picker appears (and is off by default under Enterprise
+Policies). Safari and mobile browsers do not support it.
+
+No WebUSB is involved: Web Serial talks to the port the OS CDC-ACM driver already
+provides, so nothing has to claim the USB interface.
 
 ## Use
 

@@ -414,7 +414,7 @@ async function flash() {
 
 window.addEventListener('DOMContentLoaded', () => {
   if (!('serial' in navigator)) {
-    $('status').textContent = 'This browser has no Web Serial API — use Chrome, Edge or Opera over http://localhost or HTTPS.';
+    $('status').textContent = 'No Web Serial API in this browser — use a Chromium browser or Firefox 151+, over HTTPS or localhost.';
     $('connect').disabled = true;
   }
   $('connect').onclick = () => (state.slcan?.connected ? disconnect() : connect());
