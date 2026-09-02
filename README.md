@@ -5,12 +5,17 @@ SLCAN adapter, pick a node, pick a `.bin`, flash.
 
 ## Run
 
+Hosted: **https://jlpoltrack.github.io/DroneCAN-Updater/** — pushes to `main` redeploy it.
+
+Locally:
+
 ```sh
 ./serve.sh          # http://localhost:8000
 ```
 
-Web Serial requires a secure context (localhost or HTTPS) and a Chromium browser
-(Chrome / Edge / Opera). Safari and Firefox will not work.
+Web Serial requires a secure context (GitHub Pages is HTTPS; `localhost` also counts) and
+a Chromium browser — Chrome, Edge, Opera, Brave or Arc on desktop. Firefox and Safari have
+both declined to implement Web Serial, and mobile browsers do not support it either.
 
 ## Use
 
