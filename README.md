@@ -8,6 +8,10 @@ needs a proxy — see [Firmware downloads](#firmware-downloads).
 
 ## Run
 
+Hosted: **https://jlpoltrack.github.io/AP-Updater/** — pushes to `main` redeploy it.
+
+Locally:
+
 ```sh
 ./serve.sh          # http://localhost:8000
 ```
