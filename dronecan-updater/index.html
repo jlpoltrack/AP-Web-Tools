@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DroneCAN Updater</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>DroneCAN Updater</h1>
+  <span id="status">Ready</span>
+</header>
+
+<section class="panel">
+  <div class="row">
+    <button id="connect">Connect</button>
+    <button id="reboot" hidden>Reboot FC</button>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Nodes</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Name</th><th>HW</th><th>SW</th><th>Mode</th><th>Health</th></tr></thead>
+    <tbody id="nodes"></tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h2>Firmware</h2>
+  <div class="row">
+    <input type="file" id="file" accept=".bin">
+    <span id="fwinfo" class="muted">No file selected</span>
+    <button id="flash" disabled>Update selected node</button>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+  <div id="pct" class="muted">0%</div>
+</section>
+
+<section class="panel">
+  <h2>Log</h2>
+  <pre id="log"></pre>
+</section>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
