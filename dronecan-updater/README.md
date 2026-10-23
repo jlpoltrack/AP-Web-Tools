@@ -5,7 +5,7 @@ SLCAN adapter, pick a node, pick a `.bin`, flash.
 
 ## Run
 
-Hosted: **https://jlpoltrack.github.io/DroneCAN-Updater/** — pushes to `main` redeploy it.
+Hosted: **https://jlpoltrack.github.io/AP-Web-Tools/dronecan-updater/** — pushes to `main` redeploy it.
 
 Locally:
 
