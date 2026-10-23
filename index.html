@@ -5,20 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AP Web Tools</title>
 <link rel="stylesheet" href="ap-updater/style.css">
+<style>
+  html, body { height:100%; }
+  body { display:flex; flex-direction:column; padding:0; }
+  nav { display:flex; gap:4px; padding:10px 16px 0; border-bottom:1px solid var(--line); background:var(--panel); }
+  nav a { padding:8px 14px; color:var(--muted); text-decoration:none; border:1px solid transparent;
+          border-bottom:0; border-radius:6px 6px 0 0; margin-bottom:-1px; }
+  nav a[aria-selected=true] { color:var(--fg); background:var(--bg); border-color:var(--line); }
+  iframe { flex:1; width:100%; border:0; background:var(--bg); }
+  iframe[hidden] { display:none; }
+</style>
 </head>
 <body>
-<header>
-  <h1>AP Web Tools</h1>
-</header>
-
-<section class="panel">
-  <h2><a href="ap-updater/">AP Updater</a></h2>
-  <p class="muted">Flash an ArduPilot <code>.apj</code> to a flight controller over its bootloader.</p>
-</section>
-
-<section class="panel">
-  <h2><a href="dronecan-updater/">DroneCAN Updater</a></h2>
-  <p class="muted">Flash a DroneCAN node's <code>.bin</code> through a serial SLCAN adapter.</p>
-</section>
+<nav role="tablist">
+  <a role="tab" href="#ap" data-tab="ap">AP Updater</a>
+  <a role="tab" href="#dronecan" data-tab="dronecan">DroneCAN Updater</a>
+</nav>
+<!-- Separate frames keep each tool's DOM ids and serial port apart; allow="serial" passes Web Serial through. -->
+<iframe id="ap" src="ap-updater/" allow="serial" title="AP Updater"></iframe>
+<iframe id="dronecan" src="dronecan-updater/" allow="serial" title="DroneCAN Updater" hidden></iframe>
+<script>
+  const tabs = document.querySelectorAll('[data-tab]');
+  function show() {
+    const id = location.hash === '#dronecan' ? 'dronecan' : 'ap';
+    for (const t of tabs) {
+      const on = t.dataset.tab === id;
+      t.setAttribute('aria-selected', on);
+      document.getElementById(t.dataset.tab).hidden = !on;
+    }
+  }
+  addEventListener('hashchange', show);
+  show();
+</script>
 </body>
 </html>

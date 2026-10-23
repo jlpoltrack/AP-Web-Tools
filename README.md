@@ -2,9 +2,11 @@
 
 Browser tools for ArduPilot hardware, using Web Serial (Chromium desktop browsers).
 
-| Tool | Hosted | What it does |
-|---|---|---|
-| [ap-updater](ap-updater/) | https://jlpoltrack.github.io/AP-Web-Tools/ap-updater/ | Flash an ArduPilot `.apj` over the bootloader |
-| [dronecan-updater](dronecan-updater/) | https://jlpoltrack.github.io/AP-Web-Tools/dronecan-updater/ | Flash a DroneCAN node `.bin` via an SLCAN adapter |
+Hosted: **https://jlpoltrack.github.io/AP-Web-Tools/** — one page, one tab per tool. Pushes to `main` redeploy it.
 
-Pushes to `main` redeploy both. To run one locally: `cd <tool> && ./serve.sh` (http://localhost:8000).
+| Tab | Folder | What it does |
+|---|---|---|
+| AP Updater (`#ap`) | [ap-updater](ap-updater/) | Flash an ArduPilot `.apj` over the bootloader |
+| DroneCAN Updater (`#dronecan`) | [dronecan-updater](dronecan-updater/) | Flash a DroneCAN node `.bin` via an SLCAN adapter |
+
+Run locally: `python3 -m http.server 8000 --bind 127.0.0.1` at the repo root, or `./serve.sh` inside a tool folder.
