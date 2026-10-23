@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AP Updater</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>AP Updater</h1>
+  <span id="status">Ready</span>
+</header>
+
+<section class="panel">
+  <h2>Firmware</h2>
+  <div class="row">
+    <input type="file" id="file" accept=".apj">
+    <span id="fwinfo" class="muted">No file selected</span>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Board</h2>
+  <div class="row">
+    <button id="reboot">Reboot board to bootloader</button>
+    <button id="connect">Connect to bootloader</button>
+    <button id="disconnect" hidden>Disconnect</button>
+  </div>
+  <div id="board" class="muted"></div>
+</section>
+
+<section class="panel">
+  <h2>Flash</h2>
+  <div class="row">
+    <button id="flash" disabled>Flash firmware</button>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+  <div id="pct" class="muted">0%</div>
+</section>
+
+<section class="panel">
+  <h2>Log</h2>
+  <pre id="log"></pre>
+</section>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
